@@ -35,20 +35,248 @@ The **macro recorder** captures **ALL** keyboard events, including passwords, cr
 pip install -r requirements.txt
 ```
 
+### 🤖 Advanced Features (v2+)
+
+The skill includes powerful advanced features for power users.
+
+---
+
+### Multi-Scale Image Detection
+
+`find_image_multiscale` searches for a template at multiple scales. Useful when the UI element size varies (e.g., high-DPI displays).
+
+```javascript
+sessions_spawn({
+  task: 'find_image_multiscale',
+  params: {
+    template_path: "C:/templates/button.png",
+    confidence: 0.85,
+    scale_factors: [0.5, 0.75, 1.0, 1.25, 1.5]  // optional, default includes these
+  },
+  label: 'desktop-automation-100per100-local'
+});
+```
+
+**Response**:
+```json
+{
+  "status": "ok",
+  "x": 400,
+  "y": 300,
+  "confidence": 0.92,
+  "scale": 1.25
+}
+```
+
+---
+
+### Find All Text Occurrences
+
+`find_all_text_on_screen` returns every match, not just the first. Great for extracting tables or lists.
+
+```javascript
+sessions_spawn({
+  task: 'find_all_text_on_screen',
+  params: {
+    text: "Total",
+    lang: "eng"
+  },
+  label: 'desktop-automation-100per100-local'
+});
+```
+
+**Response**:
+```json
+{
+  "status": "ok",
+  "matches": [
+    {"text": "Total", "left": 100, "top": 200, "width": 50, "height": 20, "conf": 98.5},
+    {"text": "Total", "left": 300, "top": 200, "width": 50, "height": 20, "conf": 97.2}
+  ],
+  "count": 2
+}
+```
+
+---
+
+### Detect UI Elements
+
+`detect_ui_elements` uses shape heuristics to find common UI components.
+
+```javascript
+sessions_spawn({
+  task: 'detect_ui_elements',
+  params: {
+    element_type: "button"  // omit for all types
+  },
+  label: 'desktop-automation-100per100-local'
+});
+```
+
+**Response**:
+```json
+{
+  "status": "ok",
+  "elements": [
+    {"type": "button", "x": 120, "y": 80, "w": 80, "h": 30, "area": 2400},
+    {"type": "field", "x": 120, "y": 130, "w": 200, "h": 25, "area": 5000}
+  ],
+  "count": 2
+}
+```
+
+---
+
+### Conditional Monitoring with Logic
+
+`monitor_screen_with_logic` extends `monitor_screen` with AND/OR logic between conditions.
+
+```javascript
+sessions_spawn({
+  task: 'monitor_screen_with_logic',
+  params: {
+    conditions: [
+      {
+        type: "image",
+        template_path: "C:/templates/ok.png",
+        confidence: 0.9,
+        logic: "AND",
+        actions: [
+          {"action": "click", "params": {}}
+        ]
+      },
+      {
+        type: "text",
+        text: "Success",
+        logic: "OR",
+        actions: [
+          {"action": "press_key", "params": {"key": "enter"}}
+        ]
+      }
+    ],
+    timeout: 60,
+    interval: 0.5
+  },
+  label: 'desktop-automation-100per100-local'
+});
+```
+
+---
+
+### Macros with Subroutines
+
+`play_macro_with_subroutines` allows nested macro calls. Create a macro file that contains:
+```json
+{
+  "events": [
+    {"action": "type", "params": {"text": "Hello"}},
+    {"action": "call_macro", "params": {"macro_file": "submacro.json"}}
+  ]
+}
+```
+
+Run it:
+```javascript
+sessions_spawn({
+  task: 'play_macro_with_subroutines',
+  params: {
+    macro_path: "C:/macros/main.json",
+    speed: 1.0,
+    sub_macros_dir: "C:/macros/subs"
+  },
+  label: 'desktop-automation-100per100-local'
+});
+```
+
+---
+
+### Protected Macros (Password-Locked)
+
+Create a macro encrypted with AES using a password:
+
+```javascript
+sessions_spawn({
+  task: 'create_protected_macro',
+  params: {
+    output_path: "C:/macros/secure.enc",
+    password: "MySecret123",
+    macro_events: [
+      {"action": "click", "params": {"x":100,"y":200}}
+    ]
+  },
+  label: 'desktop-automation-100per100-local'
+});
+```
+
+Load and decrypt:
+```javascript
+sessions_spawn({
+  task: 'load_and_decrypt_protected_macro',
+  params: {
+    encrypted_path: "C:/macros/secure.enc",
+    password: "MySecret123"
+  },
+  label: 'desktop-automation-100per100-local'
+});
+// Returns {"status":"ok", "events": [...]} — you can then play them
+```
+
+---
+
+### Macro Execution Reports
+
+`generate_macro_report` creates HTML and JSON logs of macro execution:
+
+```javascript
+sessions_spawn({
+  task: 'generate_macro_report',
+  params: {
+    macro_path: "C:/macros/my_macro.json",
+    execution_log: {
+      "status": "ok",
+      "actions": [
+        {"action": "click", "params": {"x":100,"y":200}, "result": {"status":"ok"}}
+      ],
+      "elapsed": 12.34
+    }
+  },
+  label: 'desktop-automation-100per100-local'
+});
+```
+
+**Response**:
+```json
+{
+  "status": "ok",
+  "report_json": "C:/macros/reports/report_2026-03-15_00-54-00.json",
+  "report_html": "C:/macros/reports/report_2026-03-15_00-54-00.html"
+}
+```
+
+---
+
+### Macro Stop Hotkey (Safety)
+
+The `MacroStopManager` class (used internally) can stop a running macro via a hotkey combination. This is a safety feature to abort long-running or misbehaving macros. (In the current version, hotkey is configurable but not exposed as a direct action; it's used by the framework.)
+
+---
+
+### Dependencies Explained
 ### Dependencies Explained
 The skill uses several Python packages. Here's a quick summary:
 
 | Package | Purpose | Actions that need it |
-|----------|---------|---------------------|
+|---------|---------|---------------------|
 | pyautogui | mouse/keyboard control, screenshots | all basic actions |
 | pygetwindow | window management | activate_window, list_windows, get_active_window |
 | Pillow | image processing | used by pyautogui |
 | pynput | macro recording (listeners) | record_macro |
-| opencv-python | image recognition | find_image, wait_for_image |
-| pytesseract | OCR (text from images) | find_text_on_screen, extract_screen_data |
+| opencv-python | image recognition | find_image, wait_for_image, find_image_multiscale |
+| pytesseract | OCR (text from images) | find_text_on_screen, extract_screen_data, find_all_text_on_screen |
 | pyperclip | clipboard access | copy_to_clipboard, paste_from_clipboard |
 | openpyxl | Excel read/write | excel_read, excel_write |
 | pandas | CSV/DataFrame conversion | data_to_csv (and used by excel functions) |
+| cryptography | AES encryption for protected macros | create_protected_macro, load_and_decrypt_protected_macro |
 
 **Optional packages**: If a package is missing, related actions will return an error. You can install selectively:
 ```bash

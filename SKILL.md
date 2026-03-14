@@ -138,6 +138,14 @@ pip install openpyxl pandas
 | `wait_for_image` | `template_path`, `timeout?`, `interval?`, `confidence?` | Wait for an image to appear |
 | `monitor_screen` | `checks`, `timeout?`, `interval?`, `stop_condition?`, `fallback_confidence?` | Surveille l'écran et exécute des actions quand des conditions sont remplies (voir détails ci-dessous) |
 | `find_text_on_screen` | `text`, `lang?` ('fra' default) | OCR: search text on screen (requires Tesseract) |
+| `find_image_multiscale` | `template_path`, `confidence?`, `scale_factors?` | Multi-scale image detection (robust to size changes) |
+| `find_all_text_on_screen` | `text`, `lang?` | Return ALL occurrences of text on screen with positions |
+| `detect_ui_elements` | `element_type?` ('button','field','slider') | Detect common UI elements by shape heuristics |
+| `monitor_screen_with_logic` | `conditions`, `timeout?`, `interval?` | Advanced monitoring with AND/OR logic groups |
+| `play_macro_with_subroutines` | `macro_path`, `speed?`, `sub_macros_dir?` | Play macro with nested `call_macro` events |
+| `create_protected_macro` | `output_path`, `password`, `macro_events?` | Create AES-encrypted macro protected by password |
+| `load_and_decrypt_protected_macro` | `encrypted_path`, `password` | Load and decrypt a protected macro |
+| `generate_macro_report` | `macro_path`, `execution_log` | Generate HTML/JSON report after macro execution |
 
 ---
 
@@ -234,6 +242,24 @@ sessions_spawn({
   label: 'desktop-automation-100per100-local'
 });
 ```
+
+---
+
+## 🤖 Advanced Vision & Conditional Automation
+
+### New Advanced Actions (v2+)
+
+| Action | Parameters | Description |
+|--------|------------|-------------|
+| `find_image_multiscale` | `template_path`, `confidence?`, `scale_factors?` | Trouve une image en testant multiples échelles (defaut: [0.5,0.75,1.0,1.25,1.5]) |
+| `find_all_text_on_screen` | `text`, `lang?` | Retourne TOUTES les occurrences du texte (positions + scores) |
+| `detect_ui_elements` | `element_type?` ('button','field','slider' ou None) | Détecte éléments UI par formes/contours |
+| `monitor_screen_with_logic` | `conditions`, `timeout?`, `interval?` | Surveillance avec logique combinatoire (AND/OR) |
+| `play_macro_with_subroutines` | `macro_path`, `speed?`, `sub_macros_dir?` | Lecture de macro avec appels de sous-macros (call_macro event) |
+| `create_protected_macro` | `output_path`, `password`, `macro_events?` | Crée macro chiffrée (AES) protégée par mot de passe |
+| `load_and_decrypt_protected_macro` | `encrypted_path`, `password` | Charge et déchiffre une macro protégée |
+| `generate_macro_report` | `macro_path`, `execution_log` | Génère rapport HTML/JSON après exécution |
+| `MacroStopManager` (class) | — | Gestionnaire hotkey pour arrêter une macro (sécurité) |
 
 ---
 
