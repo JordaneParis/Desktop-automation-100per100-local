@@ -1,0 +1,22 @@
+name: desktop-automation-100per100-local
+version: 1.0.0
+description: Full desktop automation for OpenClaw — control mouse, keyboard, windows, OCR, image recognition. Record and replay macros.
+author: Jordane Guemara
+license: MIT
+repository: https://github.com/JordaneParis/desktop-automation-100per100-local
+tags:
+  - automation
+  - macro
+  - ocr
+  - windows
+  - desktop
+entryPoint: skill.js
+requirements:
+  - python>=3.10
+  - pyautogui==0.9.54
+  - pygetwindow==0.0.9
+  - Pillow==10.4.0
+  - opencv-python==4.10.0.84
+  - pyperclip==1.9.0
+  - pytesseract==0.3.10
+  - pynput==1.7.6
