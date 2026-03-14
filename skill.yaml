@@ -20,3 +20,5 @@ requirements:
   - pyperclip==1.9.0
   - pytesseract==0.3.10
   - pynput==1.7.6
+  - openpyxl==3.1.5
+  - pandas==2.2.3

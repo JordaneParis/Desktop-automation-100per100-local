@@ -97,6 +97,102 @@ openclaw gateway restart
 
 ---
 
+## 📊 **Data Integration**
+
+### Extract Screen Data (OCR)
+Extract structured text data from the screen (or a region) using Tesseract OCR. Returns bounding boxes and confidence scores.
+
+```javascript
+sessions_spawn({
+  task: 'extract_screen_data',
+  params: {
+    region: {x: 100, y: 100, width: 500, height: 300},  // optional
+    output_format: 'json'  // default 'json'
+  },
+  label: 'desktop-automation-100per100-local'
+});
+```
+
+**Result**:
+```json
+{
+  "status": "ok",
+  "data": [
+    {"text": "Hello", "left": 120, "top": 130, "width": 50, "height": 20, "conf": 95.2},
+    ...
+  ],
+  "count": 42
+}
+```
+
+### Read Excel
+Read data from an Excel (.xlsx) file into a list of dictionaries (rows).
+
+```javascript
+sessions_spawn({
+  task: 'excel_read',
+  params: {
+    filepath: "C:/data/input.xlsx",
+    sheet_name: 0,        // or "Sheet1"
+    range: "A1:C10"       // optional, reads entire sheet if omitted
+  },
+  label: 'desktop-automation-100per100-local'
+});
+```
+
+**Result**:
+```json
+{
+  "status": "ok",
+  "data": [
+    {"Name": "Alice", "Age": 30, "City": "Paris"},
+    ...
+  ],
+  "columns": ["Name", "Age", "City"],
+  "rows": 100
+}
+```
+
+### Write Excel
+Write a list of dictionaries (or list of lists) to a new Excel file.
+
+```javascript
+sessions_spawn({
+  task: 'excel_write',
+  params: {
+    filepath: "C:/data/output.xlsx",
+    data: [
+      {"Name": "Bob", "Age": 25},
+      {"Name": "Charlie", "Age": 35}
+    ],
+    sheet_name: "Results",
+    start_cell: "A1"
+  },
+  label: 'desktop-automation-100per100-local'
+});
+```
+
+**Result**:
+```json
+{"status":"ok","filepath":"C:/data/output.xlsx","rows":2,"columns":2}
+```
+
+### Data to CSV
+Convert a list of dictionaries to CSV format (string or file).
+
+```javascript
+sessions_spawn({
+  task: 'data_to_csv',
+  params: {
+    data: [{"a":1},{"a":2}],
+    filepath: "C:/data/out.csv"  // optional; if omitted, returns CSV string
+  },
+  label: 'desktop-automation-100per100-local'
+});
+```
+
+---
+
 ## 📝 **Usage Examples**
 
 ### 1. Click and type

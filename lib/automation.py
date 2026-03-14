@@ -50,6 +50,22 @@ except ImportError:
     pytesseract = None
     logger.warning("pytesseract not available — OCR functions disabled")
 
+# Optional dependencies for data/Excel
+try:
+    import openpyxl
+    from openpyxl.utils import get_column_letter
+    OPENPYXL_AVAILABLE = True
+except ImportError:
+    OPENPYXL_AVAILABLE = False
+    logger.warning("openpyxl not available — Excel functions disabled")
+
+try:
+    import pandas as pd
+    PANDAS_AVAILABLE = True
+except ImportError:
+    PANDAS_AVAILABLE = False
+    logger.warning("pandas not available — DataFrame/CSV functions disabled")
+
 # ============ Basic actions ============
 
 def click(x, y, button='left'):
@@ -192,6 +208,184 @@ def wait_for_text_on_screen(text, lang='fra'):
         logger.error(f"find_text_on_screen error: {e}")
         return {"status": "error", "message": str(e)}
 
+# ============ Data Extraction & Excel ============
+
+def extract_screen_data(region=None, output_format='json'):
+    """
+    Extrait des données structurées depuis l'écran (ou une région) via OCR.
+    Retourne un tableau d'objets avec texte + bounding boxes.
+
+    Args:
+        region: dict {x, y, width, height} ou None pour tout l'écran
+        output_format: 'json' (défaut) ou 'csv' (retourne JSON dans les deux cas pour l'instant)
+
+    Returns:
+        {"status":"ok", "data": [...], "format": output_format}
+    """
+    if pytesseract is None:
+        return {"status": "error", "message": "pytesseract not installed"}
+
+    try:
+        if region:
+            img = pyautogui.screenshot(region=(region['x'], region['y'], region['width'], region['height']))
+        else:
+            img = pyautogui.screenshot()
+        data = pytesseract.image_to_data(img, lang='fra+eng', output_type=pytesseract.Output.DICT)
+
+        rows = []
+        n = len(data['text'])
+        for i in range(n):
+            text = data['text'][i].strip()
+            if text:  # Ignorer les entrées vides
+                rows.append({
+                    'text': text,
+                    'left': int(data['left'][i]),
+                    'top': int(data['top'][i]),
+                    'width': int(data['width'][i]),
+                    'height': int(data['height'][i]),
+                    'conf': float(data['conf'][i])
+                })
+
+        return {"status": "ok", "data": rows, "format": output_format, "count": len(rows)}
+    except Exception as e:
+        logger.error(f"extract_screen_data error: {e}")
+        return {"status": "error", "message": str(e)}
+
+def excel_read(filepath, sheet_name=0, range=None):
+    """
+    Lit un fichier Excel et retourne les données.
+
+    Args:
+        filepath: chemin vers le fichier .xlsx
+        sheet_name: nom ou index (défaut 0)
+        range: plage de cellules A1:XX (optionnel)
+
+    Returns:
+        {"status":"ok", "data": [...], "columns": [...], "sheet": sheet_name}
+    """
+    if not os.path.exists(filepath):
+        return {"status": "error", "message": f"File not found: {filepath}"}
+
+    try:
+        if not OPENPYXL_AVAILABLE:
+            return {"status": "error", "message": "openpyxl not installed. Install: pip install openpyxl"}
+
+        wb = openpyxl.load_workbook(filepath, data_only=True)
+        ws = wb[sheet_name] if isinstance(sheet_name, str) else wb.worksheets[sheet_name]
+
+        data = []
+        # Déterminer la plage
+        if range:
+            # Simple parse "A1:C10"
+            start_cell, end_cell = range.split(':')
+            start_col = openpyxl.utils.column_index_from_string(''.join(filter(str.isalpha, start_cell)))
+            start_row = int(''.join(filter(str.isdigit, start_cell)))
+            end_col = openpyxl.utils.column_index_from_string(''.join(filter(str.isalpha, end_cell)))
+            end_row = int(''.join(filter(str.isdigit, end_cell)))
+        else:
+            # Tout le tableau utilisé
+            start_row, start_col = 1, 1
+            end_row = ws.max_row
+            end_col = ws.max_column
+
+        # Lire les en-têtes (première ligne)
+        headers = []
+        for col in range(start_col, end_col+1):
+            cell_value = ws.cell(row=start_row, column=col).value
+            headers.append(str(cell_value) if cell_value else f"Col{col}")
+
+        # Lire les données
+        for row in range(start_row+1, end_row+1):
+            row_data = {}
+            for col_idx, col in enumerate(range(start_col, end_col+1)):
+                cell = ws.cell(row=row, column=col)
+                row_data[headers[col_idx]] = cell.value
+            data.append(row_data)
+
+        wb.close()
+        return {"status": "ok", "data": data, "columns": headers, "sheet": sheet_name, "rows": len(data)}
+    except Exception as e:
+        logger.error(f"excel_read error: {e}")
+        return {"status": "error", "message": str(e)}
+
+def excel_write(filepath, data, sheet_name='Sheet1', start_cell='A1'):
+    """
+    Écrit des données dans un fichier Excel.
+
+    Args:
+        filepath: chemin de sortie .xlsx
+        data: liste de dicts (colonnes = clés) ou liste de listes
+        sheet_name: nom de la feuille
+        start_cell: cellule de départ (ex: 'A1')
+
+    Returns:
+        {"status":"ok", "filepath": filepath, "rows": N, "columns": M}
+    """
+    if not OPENPYXL_AVAILABLE:
+        return {"status": "error", "message": "openpyxl not installed"}
+
+    try:
+        wb = openpyxl.Workbook()
+        ws = wb.active
+        ws.title = sheet_name
+
+        # Déterminer la cellule de départ
+        start_col_letter = ''.join(filter(str.isalpha, start_cell))
+        start_row = int(''.join(filter(str.isdigit, start_cell)))
+        start_col_idx = openpyxl.utils.column_index_from_string(start_col_letter)
+
+        # Écrire les en-têtes si data est une liste de dicts
+        if data and isinstance(data[0], dict):
+            headers = list(data[0].keys())
+            for col_idx, header in enumerate(headers):
+                ws.cell(row=start_row, column=start_col_idx + col_idx, value=header)
+            start_row += 1
+            for row_idx, row_dict in enumerate(data, start=start_row):
+                for col_idx, key in enumerate(headers):
+                    ws.cell(row=row_idx, column=start_col_idx + col_idx, value=row_dict.get(key))
+        elif data and isinstance(data[0], (list, tuple)):
+            # Liste de listes
+            for col_idx, value in enumerate(data[0]):
+                ws.cell(row=start_row, column=start_col_idx + col_idx, value=value)
+            start_row += 1
+            for row_idx, row_list in enumerate(data, start=start_row):
+                for col_idx, value in enumerate(row_list):
+                    ws.cell(row=row_idx, column=start_col_idx + col_idx, value=value)
+        else:
+            return {"status": "error", "message": "Data must be list of dicts or list of lists"}
+
+        wb.save(filepath)
+        return {"status": "ok", "filepath": filepath, "rows": len(data), "columns": len(data[0]) if data else 0}
+    except Exception as e:
+        logger.error(f"excel_write error: {e}")
+        return {"status": "error", "message": str(e)}
+
+def data_to_csv(data, filepath=None):
+    """
+    Convertit des données (liste de dicts) en CSV.
+
+    Args:
+        data: liste de dictionnaires
+        filepath: chemin optionnel pour sauvegarder
+
+    Returns:
+        {"status":"ok", "csv": "...", "filepath": "..."} ou erreur
+    """
+    if not PANDAS_AVAILABLE:
+        return {"status": "error", "message": "pandas not installed. Install: pip install pandas"}
+
+    try:
+        df = pd.DataFrame(data)
+        if filepath:
+            df.to_csv(filepath, index=False, encoding='utf-8')
+            return {"status": "ok", "filepath": filepath, "rows": len(df), "columns": len(df.columns)}
+        else:
+            csv_str = df.to_csv(index=False)
+            return {"status": "ok", "csv": csv_str, "rows": len(df), "columns": len(df.columns)}
+    except Exception as e:
+        logger.error(f"data_to_csv error: {e}")
+        return {"status": "error", "message": str(e)}
+
 # ============ Monitor & Conditional Actions ============
 
 def monitor_screen(checks, timeout=60, interval=0.5, stop_condition=None, fallback_confidence=0.85):
@@ -275,7 +469,11 @@ def monitor_screen(checks, timeout=60, interval=0.5, stop_condition=None, fallba
                     if 'y' not in action_params and 'y' in result['location']:
                         action_params['y'] = result['location']['y']
                 # Exécuter l'action (seulement les actions de base autorisées)
-                safe_actions = {'click', 'type', 'press_key', 'scroll', 'move_mouse', 'activate_window', 'drag', 'copy_to_clipboard', 'paste_from_clipboard'}
+                safe_actions = {
+                    'click', 'type', 'press_key', 'scroll', 'move_mouse',
+                    'activate_window', 'drag', 'copy_to_clipboard', 'paste_from_clipboard',
+                    'screenshot', 'list_windows', 'get_active_window'
+                }
                 if action_name in safe_actions and action_name in globals():
                     try:
                         act_res = globals()[action_name](**action_params)
@@ -370,8 +568,13 @@ def main():
         "copy_to_clipboard", "paste_from_clipboard", "drag",
         "wait_for_image", "find_text_on_screen",
         "record_macro", "play_macro",
-        "monitor_screen",  # new conditional monitoring
-        "set_safe_mode"   # new: enable/disable safe mode
+        "monitor_screen",  # conditional monitoring
+        "set_safe_mode",   # safety control
+        # Data extraction & Excel
+        "extract_screen_data",
+        "excel_read",
+        "excel_write",
+        "data_to_csv"
     ])
     parser.add_argument("json_args", nargs="?", help="JSON-encoded parameters")
     args = parser.parse_args()

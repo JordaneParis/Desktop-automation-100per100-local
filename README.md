@@ -67,6 +67,10 @@ openclaw gateway restart
 - `wait_for_image` — wait until image appears
 - `monitor_screen` — conditional monitoring: watch for images/text and trigger actions
 - `find_text_on_screen` — OCR text search
+- `extract_screen_data` — extract structured text data (OCR) from screen or region
+- `excel_read` — read data from an Excel file into list of dicts
+- `excel_write` — write list of dicts/lists to an Excel file
+- `data_to_csv` — convert list of dicts to CSV (string or file)
 
 ---
 
