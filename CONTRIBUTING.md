@@ -13,8 +13,8 @@ Thank you for your interest! This skill is open-source under the MIT license. Al
 
 ### Setup
 ```bash
-git clone https://github.com/JordaneParis/desktop-automation-100per100-local.git
-cd desktop-automation-100per100-local
+git clone https://github.com/JordaneParis/desktop-automation-ultra-local.git
+cd desktop-automation-ultra-local
 python -m venv venv
 venv\Scripts\activate  # Windows
 # or source venv/bin/activate  # Linux/macOS

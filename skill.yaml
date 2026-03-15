@@ -1,9 +1,9 @@
-name: desktop-automation-100per100-local
-version: 1.0.0
+name: desktop-automation-ultra
+version: 2.0.0
 description: Full desktop automation for OpenClaw — control mouse, keyboard, windows, OCR, image recognition. Record and replay macros.
 author: Jordane Guemara
 license: MIT
-repository: https://github.com/JordaneParis/desktop-automation-100per100-local
+repository: https://github.com/JordaneParis/desktop-automation-ultra-local
 tags:
   - automation
   - macro

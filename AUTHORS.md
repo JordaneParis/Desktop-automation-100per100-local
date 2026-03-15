@@ -29,10 +29,10 @@ To appear:
 If you use this skill in a project, please cite:
 
 ```bibtex
-@misc{desktop-automation-100per100-local,
+@misc{desktop-automation-ultra-local,
   title = {Desktop Automation Skill for OpenClaw},
   author = {Jordane Guemara and contributors},
   year = {2026},
-  url = {https://github.com/JordaneParis/desktop-automation-100per100-local}
+  url = {https://github.com/JordaneParis/desktop-automation-ultra-local}
 }
 ```

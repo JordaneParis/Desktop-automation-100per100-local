@@ -1,8 +1,8 @@
-# Desktop Automation Skill for OpenClaw
+﻿# Desktop Automation Skill for OpenClaw
 
-**⚠️  PRIVACY WARNING**: The macro recorder captures **ALL** keyboard events (including passwords, credit card numbers, private messages) and window titles. **Never record while entering credentials.** Only use for non-sensitive workflows. Store recorded macros securely.
+**âš ï¸  PRIVACY WARNING**: The macro recorder captures **ALL** keyboard events (including passwords, credit card numbers, private messages) and window titles. **Never record while entering credentials.** Only use for non-sensitive workflows. Store recorded macros securely.
 
-Full desktop automation: control mouse, keyboard, windows, OCR, image recognition — all local.
+Full desktop automation: control mouse, keyboard, windows, OCR, image recognition â€” all local.
 
 - **PyAutoGUI** for basic actions
 - **OpenCV** for image recognition
@@ -10,13 +10,13 @@ Full desktop automation: control mouse, keyboard, windows, OCR, image recognitio
 
 ---
 
-## 🔐 Security & Privacy
+## ðŸ” Security & Privacy
 
-### ⚠️ Keyboard Recording Warning
-The **macro recorder** captures **ALL** keyboard events, including passwords, credit card numbers, and personal data. **Never** record macros while entering credentials. Use only for non-sensitive workflows. Recorded macro files contain raw keystrokes — store them securely.
+### âš ï¸ Keyboard Recording Warning
+The **macro recorder** captures **ALL** keyboard events, including passwords, credit card numbers, and personal data. **Never** record macros while entering credentials. Use only for non-sensitive workflows. Recorded macro files contain raw keystrokes â€” store them securely.
 
 **Summary**:
-- No network access — completely local
+- No network access â€” completely local
 - No credential storage (unless you record them)
 - All dependencies are standard Python packages
 - You are responsible for macro file security
@@ -35,7 +35,7 @@ The **macro recorder** captures **ALL** keyboard events, including passwords, cr
 pip install -r requirements.txt
 ```
 
-### 🤖 Advanced Features (v2+)
+### ðŸ¤– Advanced Features (v2+)
 
 The skill includes powerful advanced features for power users.
 
@@ -53,7 +53,7 @@ sessions_spawn({
     confidence: 0.85,
     scale_factors: [0.5, 0.75, 1.0, 1.25, 1.5]  // optional, default includes these
   },
-  label: 'desktop-automation-100per100-local'
+  label: 'desktop-automation-ultra-local'
 });
 ```
 
@@ -81,7 +81,7 @@ sessions_spawn({
     text: "Total",
     lang: "eng"
   },
-  label: 'desktop-automation-100per100-local'
+  label: 'desktop-automation-ultra-local'
 });
 ```
 
@@ -109,7 +109,7 @@ sessions_spawn({
   params: {
     element_type: "button"  // omit for all types
   },
-  label: 'desktop-automation-100per100-local'
+  label: 'desktop-automation-ultra-local'
 });
 ```
 
@@ -157,7 +157,7 @@ sessions_spawn({
     timeout: 60,
     interval: 0.5
   },
-  label: 'desktop-automation-100per100-local'
+  label: 'desktop-automation-ultra-local'
 });
 ```
 
@@ -184,7 +184,7 @@ sessions_spawn({
     speed: 1.0,
     sub_macros_dir: "C:/macros/subs"
   },
-  label: 'desktop-automation-100per100-local'
+  label: 'desktop-automation-ultra-local'
 });
 ```
 
@@ -204,7 +204,7 @@ sessions_spawn({
       {"action": "click", "params": {"x":100,"y":200}}
     ]
   },
-  label: 'desktop-automation-100per100-local'
+  label: 'desktop-automation-ultra-local'
 });
 ```
 
@@ -216,9 +216,9 @@ sessions_spawn({
     encrypted_path: "C:/macros/secure.enc",
     password: "MySecret123"
   },
-  label: 'desktop-automation-100per100-local'
+  label: 'desktop-automation-ultra-local'
 });
-// Returns {"status":"ok", "events": [...]} — you can then play them
+// Returns {"status":"ok", "events": [...]} â€” you can then play them
 ```
 
 ---
@@ -240,7 +240,7 @@ sessions_spawn({
       "elapsed": 12.34
     }
   },
-  label: 'desktop-automation-100per100-local'
+  label: 'desktop-automation-ultra-local'
 });
 ```
 
@@ -298,13 +298,13 @@ For full details, see `DEPENDENCIES.md` in this skill folder.
 ---
 
 ### Enable skill
-Place the folder `desktop-automation-100per100-local` in your OpenClaw skills directory:
+Place the folder `desktop-automation-ultra-local` in your OpenClaw skills directory:
 ```bash
 pip install -r requirements.txt
 ```
 
 ### Enable skill
-Place the folder `desktop-automation-100per100-local` in your OpenClaw skills directory:
+Place the folder `desktop-automation-ultra-local` in your OpenClaw skills directory:
 - **Windows**: `C:\Users\<YourUsername>\.openclaw\workspace\skills\`
 - **Linux/macOS**: `~/.openclaw/workspace/skills/`
 
@@ -318,28 +318,28 @@ openclaw gateway restart
 ## Available Actions
 
 ### Basic Actions
-- `click` — click at coordinates
-- `type` — type text
-- `screenshot` — capture screen
-- `get_active_window` — get active window info
-- `list_windows` — list all windows
-- `activate_window` — activate window by title substring
-- `move_mouse` — move cursor
-- `press_key` — press a single key
-- `scroll` — scroll screen
-- `copy_to_clipboard` — copy text to clipboard
-- `paste_from_clipboard` — paste from clipboard
-- `drag` — drag from start to end
+- `click` â€” click at coordinates
+- `type` â€” type text
+- `screenshot` â€” capture screen
+- `get_active_window` â€” get active window info
+- `list_windows` â€” list all windows
+- `activate_window` â€” activate window by title substring
+- `move_mouse` â€” move cursor
+- `press_key` â€” press a single key
+- `scroll` â€” scroll screen
+- `copy_to_clipboard` â€” copy text to clipboard
+- `paste_from_clipboard` â€” paste from clipboard
+- `drag` â€” drag from start to end
 
 ### Advanced Actions
-- `find_image` — locate image on screen (OpenCV)
-- `wait_for_image` — wait until image appears
-- `monitor_screen` — conditional monitoring: watch for images/text and trigger actions
-- `find_text_on_screen` — OCR text search
-- `extract_screen_data` — extract structured text data (OCR) from screen or region
-- `excel_read` — read data from an Excel file into list of dicts
-- `excel_write` — write list of dicts/lists to an Excel file
-- `data_to_csv` — convert list of dicts to CSV (string or file)
+- `find_image` â€” locate image on screen (OpenCV)
+- `wait_for_image` â€” wait until image appears
+- `monitor_screen` â€” conditional monitoring: watch for images/text and trigger actions
+- `find_text_on_screen` â€” OCR text search
+- `extract_screen_data` â€” extract structured text data (OCR) from screen or region
+- `excel_read` â€” read data from an Excel file into list of dicts
+- `excel_write` â€” write list of dicts/lists to an Excel file
+- `data_to_csv` â€” convert list of dicts to CSV (string or file)
 
 ---
 
@@ -347,19 +347,19 @@ openclaw gateway restart
 
 ```javascript
 // Click and type
-sessions_spawn({ task: 'click {"x":100,"y":200}', label: 'desktop-automation-100per100-local' });
-sessions_spawn({ task: 'type {"text":"Hello World"}', label: 'desktop-automation-100per100-local' });
+sessions_spawn({ task: 'click {"x":100,"y":200}', label: 'desktop-automation-ultra-local' });
+sessions_spawn({ task: 'type {"text":"Hello World"}', label: 'desktop-automation-ultra-local' });
 
 // Take screenshot
-sessions_spawn({ task: 'screenshot {"path":"~/Desktop/screen.png"}', label: 'desktop-automation-100per100-local' });
+sessions_spawn({ task: 'screenshot {"path":"~/Desktop/screen.png"}', label: 'desktop-automation-ultra-local' });
 
 // Activate Notepad
-sessions_spawn({ task: 'activate_window {"title_substring":"Notepad"}', label: 'desktop-automation-100per100-local' });
+sessions_spawn({ task: 'activate_window {"title_substring":"Notepad"}', label: 'desktop-automation-ultra-local' });
 
 // Find an image
 sessions_spawn({
   task: 'find_image {"template_path":"C:/button.png","confidence":0.9}',
-  label: 'desktop-automation-100per100-local'
+  label: 'desktop-automation-ultra-local'
 });
 ```
 
@@ -384,10 +384,10 @@ To avoid recording hundreds of `move_mouse` events during a smooth drag, the rec
 - This reduces macro size dramatically while preserving intended end positions
 
 **Example:**
-- Fast horizontal line → 1 `move_mouse` event (end coordinates)
-- Slow, stop-and-go → multiple `move_mouse` events (one per "stop")
+- Fast horizontal line â†’ 1 `move_mouse` event (end coordinates)
+- Slow, stop-and-go â†’ multiple `move_mouse` events (one per "stop")
 
-Adjust the debounce time in the GUI to suit your workflow (0.1–10 seconds).
+Adjust the debounce time in the GUI to suit your workflow (0.1â€“10 seconds).
 
 ### CLI Player
 Replay a recorded macro:
@@ -398,7 +398,7 @@ Speed factor optional (1.0 = normal).
 
 ---
 
-## 🔍 Monitor Screen (Conditional Automation)
+## ðŸ” Monitor Screen (Conditional Automation)
 
 The `monitor_screen` action watches the screen for specific visual elements (images or text) and executes actions when they appear.
 
@@ -450,7 +450,7 @@ sessions_spawn({
     timeout: 30,
     stop_condition: "first_match"
   },
-  label: 'desktop-automation-100per100-local'
+  label: 'desktop-automation-ultra-local'
 });
 ```
 
@@ -479,7 +479,7 @@ sessions_spawn({
     timeout: 20,
     stop_condition: "all_matched"
   },
-  label: 'desktop-automation-100per100-local'
+  label: 'desktop-automation-ultra-local'
 });
 ```
 
@@ -501,7 +501,7 @@ sessions_spawn({
 
 ---
 
-## 📊 Data Integration
+## ðŸ“Š Data Integration
 
 ### extract_screen_data
 Extract structured text data from the screen (or a specific region) using Tesseract OCR. Returns bounding boxes, text, and confidence scores.
@@ -513,7 +513,7 @@ sessions_spawn({
     region: {x: 0, y: 0, width: 800, height: 600},  // optional
     output_format: 'json'  // default
   },
-  label: 'desktop-automation-100per100-local'
+  label: 'desktop-automation-ultra-local'
 });
 ```
 
@@ -540,7 +540,7 @@ sessions_spawn({
     sheet_name: 0,      // or "Sheet1"
     range: "A1:C10"     // optional; reads whole sheet if omitted
   },
-  label: 'desktop-automation-100per100-local'
+  label: 'desktop-automation-ultra-local'
 });
 ```
 
@@ -572,7 +572,7 @@ sessions_spawn({
     sheet_name: "Results",
     start_cell: "A1"
   },
-  label: 'desktop-automation-100per100-local'
+  label: 'desktop-automation-ultra-local'
 });
 ```
 
@@ -591,7 +591,7 @@ sessions_spawn({
     data: [{"a":1,"b":2},{"a":3,"b":4}],
     filepath: "C:/data/out.csv"  // optional; if omitted, CSV string is returned
   },
-  label: 'desktop-automation-100per100-local'
+  label: 'desktop-automation-ultra-local'
 });
 ```
 
@@ -609,7 +609,7 @@ sessions_spawn({
 
 ## Safety & Best Practices
 
-⚠️ **This skill controls mouse and keyboard. Use with extreme caution.**
+âš ï¸ **This skill controls mouse and keyboard. Use with extreme caution.**
 
 ### Safe Mode (enabled by default)
 - Blocks risky actions (`type`, `press_key`, `click`, `drag`) to prevent accidental damage.
@@ -630,7 +630,7 @@ Use logs to debug or audit activity.
 - Verify coordinates before clicking.
 - Test macros in dry-run or slow speed first.
 - `activate_window` requires exact or partial title match.
-- No network access — completely local.
+- No network access â€” completely local.
 - May require admin rights for certain applications on Windows.
 
 ---
@@ -641,7 +641,7 @@ Use logs to debug or audit activity.
 |-------|-----|
 | `pyautogui.FailSafeException` | Move mouse to corner (0,0) to disable failsafe, or set `pyautogui.FAILSAFE = False` |
 | OCR not working | Ensure Tesseract is installed and in PATH. Check language pack. |
-| `find_image` fails | Template must match screen exactly (scale, colors). Lower confidence if needed (0.7–0.95). |
+| `find_image` fails | Template must match screen exactly (scale, colors). Lower confidence if needed (0.7â€“0.95). |
 | `activate_window` can't find window | Use `list_windows` to get exact titles. |
 | Missing modules | Run `pip install -r requirements.txt` |
 | Tkinter GUI not opening | Linux: `sudo apt-get install python3-tk`. Windows: usually already installed. |
@@ -650,7 +650,7 @@ Use logs to debug or audit activity.
 
 ## License
 
-MIT © 2026 Jordane Guemara & contributors
+MIT Â© 2026 Jordane Guemara & contributors
 
 See `LICENSE` file.
 
@@ -664,4 +664,7 @@ See `CONTRIBUTING.md` to contribute to this skill.
 
 ## Author
 
-Created by **Jordane Guemara** — [@JordaneParis](https://github.com/JordaneParis)
+Created by **Jordane Guemara** â€” [@JordaneParis](https://github.com/JordaneParis)
+
+
+

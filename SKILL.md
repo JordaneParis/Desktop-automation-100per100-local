@@ -56,7 +56,7 @@ All modules use locks to prevent race conditions.
 ## 📦 **Installation**
 
 ### 1. Extract Files
-Place `desktop-automation-100per100-local/` in:
+Place `desktop-automation-ultra-local/` in:
 - Windows: `C:\Users\<User>\.openclaw\workspace\skills\`
 - Linux/macOS: `~/.openclaw/workspace/skills/`
 
@@ -306,7 +306,7 @@ MIT License. See LICENSE file.
 ## 📚 **Files Structure**
 
 ```
-desktop-automation-100per100-local/
+desktop-automation-ultra-local/
 ├── SKILL.md                          (This file)
 ├── requirements.txt                  (Python dependencies)
 ├── lib/
