@@ -146,6 +146,20 @@ pip install openpyxl pandas
 | `create_protected_macro` | `output_path`, `password`, `macro_events?` | Create AES-encrypted macro protected by password |
 | `load_and_decrypt_protected_macro` | `encrypted_path`, `password` | Load and decrypt a protected macro |
 | `generate_macro_report` | `macro_path`, `execution_log` | Generate HTML/JSON report after macro execution |
+| `screenshot_mss` | — | Fast screen capture using mss (returns BGR image internally) |
+| `find_on_screen` | `template_path`, `threshold?` | Find template on screen, returns (x, y, confidence) or null |
+| `click_position` | `x`, `y`, `duration?`, `button?` | Move mouse to coordinates and click |
+| `click_image` | `template_path`, `threshold?` | Find template on screen and click it automatically |
+| `read_text_ocr` | `lang?` | Capture full screen and return all OCR text |
+| `read_text_region` | `x`, `y`, `width`, `height`, `lang?` | OCR on a specific screen region |
+| `find_image_multiscale` | `template_path`, `confidence?`, `scale_factors?` | Multi-scale image detection (robust to size changes) |
+| `find_all_text_on_screen` | `text`, `lang?` | Return ALL occurrences of text on screen with positions |
+| `detect_ui_elements` | `element_type?` ('button','field','slider') | Detect common UI elements by shape heuristics |
+| `monitor_screen_with_logic` | `conditions`, `timeout?`, `interval?` | Advanced monitoring with AND/OR logic groups |
+| `play_macro_with_subroutines` | `macro_path`, `speed?`, `sub_macros_dir?` | Play macro with nested `call_macro` events |
+| `create_protected_macro` | `output_path`, `password`, `macro_events?` | Create AES-encrypted macro protected by password |
+| `load_and_decrypt_protected_macro` | `encrypted_path`, `password` | Load and decrypt a protected macro |
+| `generate_macro_report` | `macro_path`, `execution_log` | Generate HTML/JSON report after macro execution |
 
 ---
 

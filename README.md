@@ -271,12 +271,14 @@ The skill uses several Python packages. Here's a quick summary:
 | pygetwindow | window management | activate_window, list_windows, get_active_window |
 | Pillow | image processing | used by pyautogui |
 | pynput | macro recording (listeners) | record_macro |
-| opencv-python | image recognition | find_image, wait_for_image, find_image_multiscale |
-| pytesseract | OCR (text from images) | find_text_on_screen, extract_screen_data, find_all_text_on_screen |
+| opencv-python | image recognition | find_image, wait_for_image, find_image_multiscale, find_on_screen, click_image |
+| pytesseract | OCR (text from images) | find_text_on_screen, extract_screen_data, find_all_text_on_screen, read_text_ocr, read_text_region |
 | pyperclip | clipboard access | copy_to_clipboard, paste_from_clipboard |
 | openpyxl | Excel read/write | excel_read, excel_write |
 | pandas | CSV/DataFrame conversion | data_to_csv (and used by excel functions) |
 | cryptography | AES encryption for protected macros | create_protected_macro, load_and_decrypt_protected_macro |
+| mss | fast screen capture | screenshot_mss, vision functions (fallback if missing) |
+| numpy | array operations (OpenCV, mss) | used by opencv-python and mss |
 
 **Optional packages**: If a package is missing, related actions will return an error. You can install selectively:
 ```bash

@@ -75,6 +75,15 @@ except ImportError:
     ADV_AVAILABLE = False
     logger.debug("advanced_automation.py not available — advanced features disabled")
 
+# Import vision module (optional)
+try:
+    from . import vision as vis
+    VISION_AVAILABLE = True
+except ImportError:
+    vis = None
+    VISION_AVAILABLE = False
+    logger.debug("vision.py not available — vision features disabled")
+
 # ============ Basic actions ============
 
 def click(x, y, button='left'):
@@ -582,7 +591,7 @@ def main():
         "monitor_screen", "set_safe_mode",
         # Data
         "extract_screen_data", "excel_read", "excel_write", "data_to_csv",
-        # New advanced features
+        # Advanced automation
         "find_image_multiscale",
         "find_all_text_on_screen",
         "detect_ui_elements",
@@ -590,7 +599,14 @@ def main():
         "play_macro_with_subroutines",
         "create_protected_macro",
         "load_and_decrypt_protected_macro",
-        "generate_macro_report"
+        "generate_macro_report",
+        # Vision (autonomous desktop agent)
+        "screenshot_mss",
+        "find_on_screen",
+        "click_position",
+        "click_image",
+        "read_text_ocr",
+        "read_text_region"
     ])
     parser.add_argument("json_args", nargs="?", help="JSON-encoded parameters")
     args = parser.parse_args()
@@ -615,11 +631,13 @@ def main():
             print(json.dumps({"status": "error", "message": "Safety module not available"}))
         sys.exit(0)
 
-    # Chercher la fonction dans les globals ou dans le module advanced_automation
+    # Chercher la fonction dans les globals, advanced_automation, ou vision
     if func_name in globals():
         func = globals()[func_name]
     elif ADV_AVAILABLE and hasattr(adv, func_name):
         func = getattr(adv, func_name)
+    elif VISION_AVAILABLE and hasattr(vis, func_name):
+        func = getattr(vis, func_name)
     else:
         print(json.dumps({"status": "error", "message": f"Unknown action: {func_name}"}))
         sys.exit(1)
