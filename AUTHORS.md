@@ -33,6 +33,6 @@ If you use this skill in a project, please cite:
   title = {Desktop Automation Skill for OpenClaw},
   author = {Jordane Guemara and contributors},
   year = {2026},
-  url = {https://github.com/JordaneParis/desktop-automation-ultra-local}
+  url = {https://github.com/JordaneParis/desktop-automation-ultra}
 }
 ```

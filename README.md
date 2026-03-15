@@ -53,7 +53,7 @@ sessions_spawn({
     confidence: 0.85,
     scale_factors: [0.5, 0.75, 1.0, 1.25, 1.5]  // optional, default includes these
   },
-  label: 'desktop-automation-ultra-local'
+  label: 'desktop-automation-ultra'
 });
 ```
 
@@ -81,7 +81,7 @@ sessions_spawn({
     text: "Total",
     lang: "eng"
   },
-  label: 'desktop-automation-ultra-local'
+  label: 'desktop-automation-ultra'
 });
 ```
 
@@ -109,7 +109,7 @@ sessions_spawn({
   params: {
     element_type: "button"  // omit for all types
   },
-  label: 'desktop-automation-ultra-local'
+  label: 'desktop-automation-ultra'
 });
 ```
 
@@ -157,7 +157,7 @@ sessions_spawn({
     timeout: 60,
     interval: 0.5
   },
-  label: 'desktop-automation-ultra-local'
+  label: 'desktop-automation-ultra'
 });
 ```
 
@@ -184,7 +184,7 @@ sessions_spawn({
     speed: 1.0,
     sub_macros_dir: "C:/macros/subs"
   },
-  label: 'desktop-automation-ultra-local'
+  label: 'desktop-automation-ultra'
 });
 ```
 
@@ -204,7 +204,7 @@ sessions_spawn({
       {"action": "click", "params": {"x":100,"y":200}}
     ]
   },
-  label: 'desktop-automation-ultra-local'
+  label: 'desktop-automation-ultra'
 });
 ```
 
@@ -216,7 +216,7 @@ sessions_spawn({
     encrypted_path: "C:/macros/secure.enc",
     password: "MySecret123"
   },
-  label: 'desktop-automation-ultra-local'
+  label: 'desktop-automation-ultra'
 });
 // Returns {"status":"ok", "events": [...]} â€” you can then play them
 ```
@@ -240,7 +240,7 @@ sessions_spawn({
       "elapsed": 12.34
     }
   },
-  label: 'desktop-automation-ultra-local'
+  label: 'desktop-automation-ultra'
 });
 ```
 
@@ -298,13 +298,13 @@ For full details, see `DEPENDENCIES.md` in this skill folder.
 ---
 
 ### Enable skill
-Place the folder `desktop-automation-ultra-local` in your OpenClaw skills directory:
+Place the folder `desktop-automation-ultra` in your OpenClaw skills directory:
 ```bash
 pip install -r requirements.txt
 ```
 
 ### Enable skill
-Place the folder `desktop-automation-ultra-local` in your OpenClaw skills directory:
+Place the folder `desktop-automation-ultra` in your OpenClaw skills directory:
 - **Windows**: `C:\Users\<YourUsername>\.openclaw\workspace\skills\`
 - **Linux/macOS**: `~/.openclaw/workspace/skills/`
 
@@ -347,19 +347,19 @@ openclaw gateway restart
 
 ```javascript
 // Click and type
-sessions_spawn({ task: 'click {"x":100,"y":200}', label: 'desktop-automation-ultra-local' });
-sessions_spawn({ task: 'type {"text":"Hello World"}', label: 'desktop-automation-ultra-local' });
+sessions_spawn({ task: 'click {"x":100,"y":200}', label: 'desktop-automation-ultra' });
+sessions_spawn({ task: 'type {"text":"Hello World"}', label: 'desktop-automation-ultra' });
 
 // Take screenshot
-sessions_spawn({ task: 'screenshot {"path":"~/Desktop/screen.png"}', label: 'desktop-automation-ultra-local' });
+sessions_spawn({ task: 'screenshot {"path":"~/Desktop/screen.png"}', label: 'desktop-automation-ultra' });
 
 // Activate Notepad
-sessions_spawn({ task: 'activate_window {"title_substring":"Notepad"}', label: 'desktop-automation-ultra-local' });
+sessions_spawn({ task: 'activate_window {"title_substring":"Notepad"}', label: 'desktop-automation-ultra' });
 
 // Find an image
 sessions_spawn({
   task: 'find_image {"template_path":"C:/button.png","confidence":0.9}',
-  label: 'desktop-automation-ultra-local'
+  label: 'desktop-automation-ultra'
 });
 ```
 
@@ -450,7 +450,7 @@ sessions_spawn({
     timeout: 30,
     stop_condition: "first_match"
   },
-  label: 'desktop-automation-ultra-local'
+  label: 'desktop-automation-ultra'
 });
 ```
 
@@ -479,7 +479,7 @@ sessions_spawn({
     timeout: 20,
     stop_condition: "all_matched"
   },
-  label: 'desktop-automation-ultra-local'
+  label: 'desktop-automation-ultra'
 });
 ```
 
@@ -513,7 +513,7 @@ sessions_spawn({
     region: {x: 0, y: 0, width: 800, height: 600},  // optional
     output_format: 'json'  // default
   },
-  label: 'desktop-automation-ultra-local'
+  label: 'desktop-automation-ultra'
 });
 ```
 
@@ -540,7 +540,7 @@ sessions_spawn({
     sheet_name: 0,      // or "Sheet1"
     range: "A1:C10"     // optional; reads whole sheet if omitted
   },
-  label: 'desktop-automation-ultra-local'
+  label: 'desktop-automation-ultra'
 });
 ```
 
@@ -572,7 +572,7 @@ sessions_spawn({
     sheet_name: "Results",
     start_cell: "A1"
   },
-  label: 'desktop-automation-ultra-local'
+  label: 'desktop-automation-ultra'
 });
 ```
 
@@ -591,7 +591,7 @@ sessions_spawn({
     data: [{"a":1,"b":2},{"a":3,"b":4}],
     filepath: "C:/data/out.csv"  // optional; if omitted, CSV string is returned
   },
-  label: 'desktop-automation-ultra-local'
+  label: 'desktop-automation-ultra'
 });
 ```
 
@@ -665,6 +665,8 @@ See `CONTRIBUTING.md` to contribute to this skill.
 ## Author
 
 Created by **Jordane Guemara** â€” [@JordaneParis](https://github.com/JordaneParis)
+
+
 
 
 

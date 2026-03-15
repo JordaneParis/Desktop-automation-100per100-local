@@ -1,4 +1,4 @@
-# Desktop Automation Skill v2.0
+﻿# Desktop Automation Skill v2.0
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![OpenClaw](https://img.shields.io/badge/OpenClaw-Skill-blue)](https://github.com/openclaw/openclaw)
@@ -7,7 +7,7 @@
 
 ---
 
-## ⚠️ **Privacy & Security**
+## âš ï¸ **Privacy & Security**
 
 **CRITICAL**: This skill captures ALL keyboard and mouse events. 
 - **NEVER record while entering passwords, credit cards, or secrets**
@@ -18,21 +18,21 @@
 
 ---
 
-## 🎯 **What It Does**
+## ðŸŽ¯ **What It Does**
 
 Automate desktop interactions without APIs:
-- ✅ Click, type, drag, scroll
-- ✅ Capture screenshots
-- ✅ Recognize images (OpenCV template matching)
-- ✅ Extract text (Tesseract OCR)
-- ✅ Record and replay macros
-- ✅ Find windows by title
-- ✅ Clipboard operations
-- ✅ Safe mode with dry_run for testing
+- âœ… Click, type, drag, scroll
+- âœ… Capture screenshots
+- âœ… Recognize images (OpenCV template matching)
+- âœ… Extract text (Tesseract OCR)
+- âœ… Record and replay macros
+- âœ… Find windows by title
+- âœ… Clipboard operations
+- âœ… Safe mode with dry_run for testing
 
 ---
 
-## 🔐 **Safety Features (Built-In)**
+## ðŸ” **Safety Features (Built-In)**
 
 ### 1. **Safe Mode** (Default: ON)
 Blocks dangerous actions when enabled:
@@ -53,10 +53,10 @@ All modules use locks to prevent race conditions.
 
 ---
 
-## 📦 **Installation**
+## ðŸ“¦ **Installation**
 
 ### 1. Extract Files
-Place `desktop-automation-ultra-local/` in:
+Place `desktop-automation-ultra/` in:
 - Windows: `C:\Users\<User>\.openclaw\workspace\skills\`
 - Linux/macOS: `~/.openclaw/workspace/skills/`
 
@@ -78,7 +78,7 @@ openclaw gateway restart
 
 ---
 
-## 🚀 **Quick Start**
+## ðŸš€ **Quick Start**
 
 ### Basic Click
 ```yaml
@@ -115,7 +115,7 @@ params:
 
 ---
 
-## 📖 **Core Actions**
+## ðŸ“– **Core Actions**
 
 ### **Mouse & Keyboard**
 
@@ -162,7 +162,7 @@ params:
 | Action | Parameters | Returns |
 |--------|------------|---------|
 | `play_macro` | `macro_path`, `speed=1.0`, `dry_run` | `{status, executed, total, errors[]}` |
-| `stop_macro` | — | `{status}` |
+| `stop_macro` | â€” | `{status}` |
 | `play_macro_with_subroutines` | `macro_path`, `speed=1.0`, `sub_macros_dir`, `dry_run` | `{status, executed, total, errors[]}` |
 
 ### **Safety Management**
@@ -170,11 +170,11 @@ params:
 | Action | Parameters | Returns |
 |--------|------------|---------|
 | `set_safe_mode` | `enabled=true` | `{status, safe_mode}` |
-| `get_safety_status` | — | `{status, safe_mode_enabled, dangerous_patterns, dangerous_actions[]}` |
+| `get_safety_status` | â€” | `{status, safe_mode_enabled, dangerous_patterns, dangerous_actions[]}` |
 
 ---
 
-## 📝 **Macro Format**
+## ðŸ“ **Macro Format**
 
 Recorded macros are JSON with this structure:
 
@@ -200,28 +200,28 @@ Recorded macros are JSON with this structure:
 }
 ```
 
-- `action` — action name
-- `params` — action parameters
-- `wait` — milliseconds to wait before next action
+- `action` â€” action name
+- `params` â€” action parameters
+- `wait` â€” milliseconds to wait before next action
 
 ---
 
-## 🔧 **Advanced: Mouse Move Debouncing**
+## ðŸ”§ **Advanced: Mouse Move Debouncing**
 
 To avoid recording hundreds of `move_mouse` events during a smooth drag, the recorder uses **debouncing**:
 
 - When you move the mouse, events are **suppressed** during movement
 - After you **stop moving** for `N` seconds (default: 1 sec), the **final position** is recorded
 - This reduces macro size dramatically while preserving intended end positions
-- Configurable via GUI: set debounce time (0.1–10 seconds)
+- Configurable via GUI: set debounce time (0.1â€“10 seconds)
 
 **Example:**
-- Fast horizontal line → 1 `move_mouse` event (end coordinates)
-- Slow, stop-and-go → multiple `move_mouse` events (one per "stop")
+- Fast horizontal line â†’ 1 `move_mouse` event (end coordinates)
+- Slow, stop-and-go â†’ multiple `move_mouse` events (one per "stop")
 
 ---
 
-## 🧪 **Testing**
+## ðŸ§ª **Testing**
 
 Run the unit test suite:
 ```bash
@@ -240,7 +240,7 @@ OK
 
 ---
 
-## 📊 **Logging**
+## ðŸ“Š **Logging**
 
 All actions logged to: `~/.openclaw/skills/desktop-automation-logs/automation_YYYY-MM-DD.log`
 
@@ -253,7 +253,7 @@ Example:
 
 ---
 
-## ⚙️ **Configuration**
+## âš™ï¸ **Configuration**
 
 ### Environment Variables
 ```bash
@@ -266,7 +266,7 @@ export AUTOMATION_SAFE_MODE=false
 
 ---
 
-## 🐛 **Troubleshooting**
+## ðŸ› **Troubleshooting**
 
 ### "pyautogui failsafe triggered"
 Move mouse to corner of screen to stop.
@@ -297,33 +297,33 @@ params:
 
 ---
 
-## 📄 **License**
+## ðŸ“„ **License**
 
 MIT License. See LICENSE file.
 
 ---
 
-## 📚 **Files Structure**
+## ðŸ“š **Files Structure**
 
 ```
-desktop-automation-ultra-local/
-├── SKILL.md                          (This file)
-├── requirements.txt                  (Python dependencies)
-├── lib/
-│   ├── actions.py                   (Core click/type/drag actions)
-│   ├── image_recognition.py         (OpenCV template matching)
-│   ├── ocr_engine.py                (Tesseract OCR)
-│   ├── macro_player.py              (Record/playback macros)
-│   ├── safety_manager.py            (Safe mode, blocking)
-│   └── utils.py                     (Logging, helpers)
-├── scripts/
-│   └── test_automation.py           (Unit tests)
-└── recorded_macro/                  (Output: saved macros)
+desktop-automation-ultra/
+â”œâ”€â”€ SKILL.md                          (This file)
+â”œâ”€â”€ requirements.txt                  (Python dependencies)
+â”œâ”€â”€ lib/
+â”‚   â”œâ”€â”€ actions.py                   (Core click/type/drag actions)
+â”‚   â”œâ”€â”€ image_recognition.py         (OpenCV template matching)
+â”‚   â”œâ”€â”€ ocr_engine.py                (Tesseract OCR)
+â”‚   â”œâ”€â”€ macro_player.py              (Record/playback macros)
+â”‚   â”œâ”€â”€ safety_manager.py            (Safe mode, blocking)
+â”‚   â””â”€â”€ utils.py                     (Logging, helpers)
+â”œâ”€â”€ scripts/
+â”‚   â””â”€â”€ test_automation.py           (Unit tests)
+â””â”€â”€ recorded_macro/                  (Output: saved macros)
 ```
 
 ---
 
-## ✅ **Validation Checklist**
+## âœ… **Validation Checklist**
 
 - [x] All modules have proper error handling
 - [x] Thread safety implemented (locks)
@@ -336,9 +336,11 @@ desktop-automation-ultra-local/
 - [x] Graceful fallbacks for missing dependencies
 - [x] Documentation complete
 
-**Status: PRODUCTION READY** ✅
+**Status: PRODUCTION READY** âœ…
 
 ---
 
 *Last updated: 2026-03-15*
 *Version: 2.0.0*
+
+
