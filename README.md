@@ -262,7 +262,6 @@ The `MacroStopManager` class (used internally) can stop a running macro via a ho
 ---
 
 ### Dependencies Explained
-### Dependencies Explained
 The skill uses several Python packages. Here's a quick summary:
 
 | Package | Purpose | Actions that need it |
@@ -375,6 +374,20 @@ python scripts/record_macro.py
 ```
 Records: mouse moves, clicks, scrolling, keyboard, window switches.
 Saves JSON files to `recorded_macro/`.
+
+#### Mouse Move Debouncing
+To avoid recording hundreds of `move_mouse` events during a smooth drag, the recorder uses **debouncing**:
+
+- **Configurable debounce time** (default: 1 second) via the GUI entry field
+- When you move the mouse, events are suppressed during movement
+- After you **stop moving** for the debounce period, the **final position** is recorded
+- This reduces macro size dramatically while preserving intended end positions
+
+**Example:**
+- Fast horizontal line → 1 `move_mouse` event (end coordinates)
+- Slow, stop-and-go → multiple `move_mouse` events (one per "stop")
+
+Adjust the debounce time in the GUI to suit your workflow (0.1–10 seconds).
 
 ### CLI Player
 Replay a recorded macro:

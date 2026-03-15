@@ -9,7 +9,7 @@ passwords, credit card numbers, and other sensitive data. Use with extreme cauti
 Only record macros for non-sensitive workflows. Never record while entering credentials.
 """
 import tkinter as tk
-from tkinter import filedialog, messagebox, scrolledtext
+from tkinter import filedialog, messagebox, scrolledtext, ttk
 import json, os, time, threading, logging, sys
 from datetime import datetime
 from pynput import mouse, keyboard
@@ -67,6 +67,12 @@ class MacroRecorder:
         self.stop_event = threading.Event()
         self.lock = threading.RLock()
         self.window_import_success = False
+        
+        # Debounce pour mousemove
+        self.debounce_seconds = 1.0  # Timer par défaut
+        self.pending_move = None  # Position en attente
+        self.debounce_timer = None  # Timer thread
+        self.debounce_lock = threading.Lock()  # Lock pour le debounce
 
     def _safe_import_pygetwindow(self):
         """Import pygetwindow de manière safe et cache le résultat"""
@@ -165,13 +171,38 @@ class MacroRecorder:
         logger.debug("Window monitor thread arrêté")
 
     def _on_move_wrapper(self, x, y):
+        """Gère le mouvement de souris avec debounce (1s par défaut)"""
         if not self.recording:
             return
-        self._append_event_safe({
-            "timestamp": time.time() - self.start_time,
-            "action": "move_mouse",
-            "params": {"x": int(round(x)), "y": int(round(y))}
-        })
+        
+        # Coordonnées arrondies
+        x_int = int(round(x))
+        y_int = int(round(y))
+        
+        with self.debounce_lock:
+            # Annuler le timer précédent s'il existe
+            if self.debounce_timer and self.debounce_timer.is_alive():
+                self.debounce_timer.cancel()
+            
+            # Stocker la position actuelle
+            self.pending_move = (x_int, y_int, time.time() - self.start_time)
+            
+            # Démarrer un nouveau timer
+            self.debounce_timer = threading.Timer(self.debounce_seconds, self._flush_move)
+            self.debounce_timer.daemon = True
+            self.debounce_timer.start()
+    
+    def _flush_move(self):
+        """Appelé après le debounce : enregistre la position finale"""
+        with self.debounce_lock:
+            if self.pending_move:
+                x, y, timestamp = self.pending_move
+                self._append_event_safe({
+                    "timestamp": timestamp,
+                    "action": "move_mouse",
+                    "params": {"x": x, "y": y}
+                })
+                self.pending_move = None
 
     def _on_click_wrapper(self, x, y, button, pressed):
         if not self.recording or not pressed:
@@ -218,6 +249,20 @@ class MacroRecorder:
         logger.info("Arrêt de l'enregistrement...")
         self.recording = False
         self.stop_event.set()
+
+        # Annuler le timer de debounce s'il est en cours
+        with self.debounce_lock:
+            if self.debounce_timer and self.debounce_timer.is_alive():
+                self.debounce_timer.cancel()
+            # Vider le pending move si présent
+            if self.pending_move:
+                x, y, timestamp = self.pending_move
+                self._append_event_safe({
+                    "timestamp": timestamp,
+                    "action": "move_mouse",
+                    "params": {"x": x, "y": y}
+                })
+                self.pending_move = None
 
         # Arrêter les listeners
         if self.mouse_listener:
@@ -280,13 +325,15 @@ class RecorderGUI:
 
         self.root = tk.Tk()
         self.root.title("Macro Recorder — Ultra Robuste")
-        self.root.geometry("400x250")
+        self.root.geometry("420x350")
         self.root.resizable(False, False)
 
         self.status_label = None
         self.start_button = None
         self.stop_button = None
         self.folder_label = None
+        self.events_tree = None  # Treeview pour les événements
+        self.debounce_var = None  # Variable Tkinter pour le debounce
 
         self._build_ui()
 
@@ -298,7 +345,7 @@ class RecorderGUI:
         button_frame = tk.Frame(self.root)
         button_frame.pack(pady=pad)
 
-        tk.Button(
+        self.start_button = tk.Button(
             button_frame,
             text="🚀 Démarrer l'enregistrement",
             command=self._start_recording,
@@ -306,7 +353,8 @@ class RecorderGUI:
             bg='#4CAF50',
             fg='white',
             font=('Segoe UI', 10, 'bold')
-        ).pack(pady=5)
+        )
+        self.start_button.pack(pady=5)
 
         self.stop_button = tk.Button(
             button_frame,
@@ -326,6 +374,34 @@ class RecorderGUI:
             command=self._choose_folder,
             width=30
         ).pack(pady=5)
+
+        # Configuration du debounce
+        debounce_frame = tk.Frame(self.root)
+        debounce_frame.pack(pady=5)
+
+        tk.Label(
+            debounce_frame,
+            text="Débounce mousemove (sec) :",
+            font=('Segoe UI', 9)
+        ).pack(side=tk.LEFT, padx=5)
+
+        self.debounce_var = tk.StringVar(value="1.0")
+        debounce_entry = tk.Entry(
+            debounce_frame,
+            textvariable=self.debounce_var,
+            width=6,
+            justify='center'
+        )
+        debounce_entry.pack(side=tk.LEFT, padx=5)
+
+        tk.Button(
+            debounce_frame,
+            text="Appliquer",
+            command=self._apply_debounce,
+            bg='#2196F3',
+            fg='white',
+            font=('Segoe UI', 9, 'bold')
+        ).pack(side=tk.LEFT, padx=5)
 
         # Dossier
         self.folder_label = tk.Label(
@@ -359,6 +435,31 @@ class RecorderGUI:
         )
         self.log_text.pack(fill=tk.BOTH, expand=True)
 
+        # Cadre pour les événements enregistrés (affichage temps réel)
+        events_frame = tk.LabelFrame(self.root, text="Événements enregistrés (temps réel)", padx=5, pady=5)
+        events_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
+
+        # Treeview pour afficher les événements
+        self.events_tree = ttk.Treeview(
+            events_frame,
+            columns=("temps", "action", "details"),
+            show='headings',
+            height=6
+        )
+        self.events_tree.heading("temps", text="Temps (s)")
+        self.events_tree.heading("action", text="Action")
+        self.events_tree.heading("details", text="Détails")
+        self.events_tree.column("temps", width=60, minwidth=50)
+        self.events_tree.column("action", width=80, minwidth=70)
+        self.events_tree.column("details", width=200, minwidth=150)
+
+        # Scrollbar pour le Treeview
+        events_scroll = ttk.Scrollbar(events_frame, orient=tk.VERTICAL, command=self.events_tree.yview)
+        self.events_tree.configure(yscrollcommand=events_scroll.set)
+
+        self.events_tree.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        events_scroll.pack(side=tk.RIGHT, fill=tk.Y)
+
         # Info label
         tk.Label(
             self.root,
@@ -384,6 +485,52 @@ class RecorderGUI:
         handler = TkinterLogHandler(self.log_text, max_lines=100)
         logger.addHandler(handler)
 
+    def _update_events_list(self):
+        """Met à jour la liste des événements enregistrés en temps réel"""
+        if self.events_tree is None:
+            return
+        
+        # Effacer les anciennes entrées
+        self.events_tree.delete(*self.events_tree.get_children())
+        
+        # Copie thread-safe des événements
+        with self.recorder.lock:
+            events = list(self.recorder.events)
+        
+        # Afficher les 100 derniers événements
+        for event in events[-100:]:
+            t = event.get('timestamp', 0)
+            action = event.get('action', '?')
+            params = event.get('params', {})
+            
+            # Formater les détails selon l'action
+            if action == 'click':
+                details = f"({params.get('x')},{params.get('y')}) [{params.get('button')}]"
+            elif action == 'press_key':
+                details = f"'{params.get('key')}'"
+            elif action == 'type':
+                text = params.get('text', '')
+                details = f"'{text[:30]}{'...' if len(text)>30 else ''}'"
+            elif action == 'move_mouse':
+                details = f"({params.get('x')},{params.get('y')})"
+            elif action == 'scroll':
+                details = f"{params.get('amount')}"
+            elif action == 'drag':
+                start = params.get('start', (0,0))
+                end = params.get('end', (0,0))
+                details = f"({start})→({end})"
+            elif action == 'activate_window':
+                title = params.get('title_substring', '')
+                details = f"'{title[:30]}{'...' if len(title)>30 else ''}'"
+            else:
+                details = str(params)[:40]
+            
+            self.events_tree.insert("", tk.END, values=(f"{t:.3f}", action, details))
+        
+        # Programmer la prochaine mise à jour si enregistrement en cours
+        if self.recorder.recording:
+            self.root.after(250, self._update_events_list)
+
     def _start_recording(self):
         """Callback bouton Démarrer"""
         try:
@@ -395,6 +542,8 @@ class RecorderGUI:
             self.status_label.config(text="🔴 Enregistrement en cours...", fg='#D32F2F')
             self.start_button.config(state='disabled')
             self.stop_button.config(state='normal')
+            # Démarrer l'affichage des événements en temps réel
+            self._update_events_list()
         except Exception as e:
             logger.error(f"Échec démarrage : {e}")
             messagebox.showerror("Erreur", f"Impossible de démarrer : {e}")
@@ -421,6 +570,17 @@ class RecorderGUI:
         if folder:
             self.output_dir = folder
             self.folder_label.config(text=folder)
+
+    def _apply_debounce(self):
+        """Applique le paramètre de debounce depuis l'Entry"""
+        try:
+            value = float(self.debounce_var.get())
+            if value < 0.1 or value > 10.0:
+                raise ValueError("Entre 0.1 et 10 secondes")
+            self.recorder.debounce_seconds = value
+            logger.info(f"Débounce configuré à {value}s")
+        except ValueError as e:
+            messagebox.showerror("Valeur invalide", f"Le debounce doit être un nombre entre 0.1 et 10 secondes.\nErreur: {e}")
 
     def run(self):
         """Lancement de la boucle Tkinter"""
