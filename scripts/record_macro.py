@@ -35,6 +35,8 @@ class TkinterLogHandler(logging.Handler):
 
     def emit(self, record):
         try:
+            if self.text_widget is None:
+                return
             msg = self.format(record)
             # Utiliser after_idle pour éviter de bloquer l'UI
             def append_log():
